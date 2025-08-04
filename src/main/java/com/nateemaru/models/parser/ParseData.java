@@ -17,8 +17,8 @@ public class ParseData implements Callable<Integer> {
     @CommandLine.Option(names = "-f", description = "enable full statistic")
     private boolean fullStatistic = false;
 
-    @CommandLine.Option(names = "-a", description = "rewrite existing files")
-    private boolean rewrite = false;
+    @CommandLine.Option(names = "-a", description = "overwrite existing files")
+    private boolean overwrite = false;
 
     @CommandLine.Option(names = "-p", description = "prefix")
     private String prefix = "";
@@ -50,12 +50,12 @@ public class ParseData implements Callable<Integer> {
         this.fullStatistic = fullStatistic;
     }
 
-    public boolean isRewrite() {
-        return rewrite;
+    public boolean isOverwrite() {
+        return overwrite;
     }
 
-    public void setRewrite(boolean rewrite) {
-        this.rewrite = rewrite;
+    public void setOverwrite(boolean overwrite) {
+        this.overwrite = overwrite;
     }
 
     public String getPrefix() {

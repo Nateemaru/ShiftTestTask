@@ -1,5 +1,8 @@
 package com.nateemaru.models.inputOutput;
 
+import com.nateemaru.extensions.StringExtensions;
+import com.nateemaru.models.dataFilter.buffers.BaseBuffer;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -8,39 +11,23 @@ import java.util.List;
 
 public class WriteService {
 
-    public void writeIntegers(List<Integer> list, String name, boolean rewrite) {
-        if (list == null || list.isEmpty()) return;
+    public void write(BaseBuffer<?> buffer, String fileName, String prefix, String path, boolean overwrite) {
 
-        File file = prepareFile(name);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, rewrite))) {
-            for (Integer num : list) {
-                writer.write(num.toString() + System.lineSeparator());
-            }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        if (buffer == null) {
+            return;
         }
-    }
 
-    public void writeFloats(List<Float> list, String name, boolean rewrite) {
-        if (list == null || list.isEmpty()) return;
-
-        File file = prepareFile(name);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, rewrite))) {
-            for (Float num : list) {
-                writer.write(num.toString() + System.lineSeparator());
-            }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        List<String> outputBufferLines = buffer.asLines();
+        if (outputBufferLines == null || outputBufferLines.isEmpty()) {
+            return;
         }
-    }
 
-    public void writeStrings(List<String> list, String name, boolean rewrite) {
-        if (list == null || list.isEmpty()) return;
-
+        String name = prepareFileName(fileName, prefix, path);
         File file = prepareFile(name);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, rewrite))) {
-            for (String str : list) {
-                writer.write(str + System.lineSeparator());
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, overwrite))) {
+            for (String line : outputBufferLines) {
+                writer.write(line + System.lineSeparator());
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -57,5 +44,33 @@ public class WriteService {
         }
 
         return file;
+    }
+
+    private String prepareFileName(String name, String prefix, String path) {
+        String result = name;
+
+        if (StringExtensions.isStringValid(prefix)) {
+            result = prefix + result;
+        }
+
+        if (StringExtensions.isStringValid(path)) {
+            if (!path.endsWith(File.separator)) {
+                path += File.separator;
+            }
+            if (StringExtensions.isValidPath(path)) {
+
+                if (StringExtensions.isPathExist(path)) {
+                    result = path + result;
+                }
+                else {
+                    System.out.println("\nPath '" + path + "' does not exist or is not a directory. Using default path.");
+                }
+            }
+            else {
+                System.out.println("\nPath " + path + " is not a valid path. Using default path.");
+            }
+        }
+
+        return result;
     }
 }
