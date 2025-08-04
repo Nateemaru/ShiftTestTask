@@ -17,7 +17,7 @@ public class FloatBuffer extends BaseBuffer<Float> {
                 System.out.printf("Number processing error '%s' for type Float: %s%n", line, e.getMessage());
                 if (line.toLowerCase().contains("e") &&
                         (line.length() > 15 || Math.abs(Double.parseDouble(line)) > Float.MAX_VALUE)) {
-                    System.out.println("  Note: the number is too large to be accurately represented in Float");
+                    System.out.println("Note: the number is too large to be accurately represented in Float");
                 }
             }
         }
